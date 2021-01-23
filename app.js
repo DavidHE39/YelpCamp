@@ -3,7 +3,7 @@ const path = require('path');
 const mongoose = require('mongoose');
 const methodOverride = require('method-override');
 const Campground = require('./models/campground');
-const campground = require('./models/campground');
+
 
 mongoose.connect('mongodb://localhost:27017/yelp-camp', {
     useNewUrlParser: true,
@@ -36,7 +36,7 @@ app.get('/campgrounds', async (req, res) => {
 })
 
 app.get('/campgrounds/new', (req, res) => {
-    res.render('campgrounds//new');
+    res.render('campgrounds/new');
 })
 
 app.post('/campgrounds', async (req, res) => {
@@ -56,8 +56,12 @@ app.get('/campgrounds/:id/edit', async (req, res) => {
 })
 
 app.put('/campgrounds/:id', async (req, res) => {
-    res.send("it worked!")
+    const { id } = req.params;
+    const campground = await Campground.findByIdAndUpdate(id, { ...req.body.campground });
+    res.redirect(`/campgrounds/${campground._id}`)
 })
+
+
 app.listen(3000, () => {
     console.log('Connected on port 3000')
 })
